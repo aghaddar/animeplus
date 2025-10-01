@@ -14,6 +14,10 @@ const ApiStatusIndicator = ({
   pollingInterval = 60000, // Default: check every minute
   disabled = false, // Disable by default in preview environments
 }: ApiStatusIndicatorProps) => {
+  // Opt-in flag: only show the indicator when NEXT_PUBLIC_SHOW_API_STATUS === 'true'
+  // This makes it easy to remove the "API Offline" UI without deleting the component.
+  const showIndicatorByEnv = process.env.NEXT_PUBLIC_SHOW_API_STATUS === "true"
+  if (!showIndicatorByEnv) return null
   const [isOnline, setIsOnline] = useState<boolean | null>(null)
   const [isChecking, setIsChecking] = useState(false)
   const [lastChecked, setLastChecked] = useState<Date | null>(null)
