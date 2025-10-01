@@ -56,8 +56,12 @@ export default function AnimePageClient({ animeInfo, relatedAnime }: AnimePageCl
   // Create the watch URL for the first episode
   const watchUrl = firstEpisode ? `/watch/${animeInfo.id}/${firstEpisode.id}` : "#"
 
+  // Ensure episodes is always an array for rendering and typing
+  const episodes = Array.isArray(animeInfo.episodes) ? animeInfo.episodes : []
+
   return (
-    <div className="bg-black text-white">
+    <>
+      <div className="bg-black text-white">
       <div className="container mx-auto px-4 py-8">
         {/* Anime Title */}
         <h1 className="text-4xl font-bold mb-8">{animeInfo.title}</h1>
@@ -112,6 +116,7 @@ export default function AnimePageClient({ animeInfo, relatedAnime }: AnimePageCl
                       : "text-gray-400 hover:text-white"
                   }`}
                   onClick={() => setActiveTab("overview")}
+                  type="button"
                 >
                   Overview
                 </button>
@@ -122,6 +127,7 @@ export default function AnimePageClient({ animeInfo, relatedAnime }: AnimePageCl
                       : "text-gray-400 hover:text-white"
                   }`}
                   onClick={() => setActiveTab("episodes")}
+                  type="button"
                 >
                   Episodes
                 </button>
@@ -132,6 +138,7 @@ export default function AnimePageClient({ animeInfo, relatedAnime }: AnimePageCl
                       : "text-gray-400 hover:text-white"
                   }`}
                   onClick={() => setActiveTab("related")}
+                  type="button"
                 >
                   Related
                 </button>
@@ -196,29 +203,8 @@ export default function AnimePageClient({ animeInfo, relatedAnime }: AnimePageCl
 
             {activeTab === "episodes" && (
               <div>
-                {Array.isArray(animeInfo?.episodes) && animeInfo.episodes.length > 0 && (
-                  <div className="mt-6">
-                    <PaginatedEpisodeList episodes={animeInfo.episodes} animeId={animeInfo.id.toString()} />
-                  </div>
-                )}
-                {/* {Array.isArray(animeInfo.episodes) && animeInfo.episodes.length > 0 ? (
-                  <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
-                    {animeInfo.episodes.map((episode) => (
-                      <Link
-                        key={episode.id}
-                        href={`/watch/${animeInfo.id}/${episode.id}`}
-                        className="bg-gray-800 hover:bg-gray-700 rounded-md p-3 transition-colors"
-                      >
-                        <div className="text-center">
-                          <span className="block font-medium">Episode {episode.number}</span>
-                          {episode.title && <span className="text-sm text-gray-400">{episode.title}</span>}
-                        </div>
-                      </Link>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="text-gray-400">No episodes available.</p>
-                )} */}
+                {/* Episodes list is rendered below as a full-bleed section so it can span the device width on mobile */}
+                {episodes.length === 0 && <p className="text-gray-400">No episodes available.</p>}
               </div>
             )}
 
@@ -271,5 +257,16 @@ export default function AnimePageClient({ animeInfo, relatedAnime }: AnimePageCl
         </div>
       </div>
     </div>
+      {/* Full-bleed episodes section (renders outside the centered container so it can span the full device width on mobile) */}
+      {activeTab === "episodes" && episodes.length > 0 && (
+        <div className="-mx-4 sm:mx-0 px-4 sm:px-0">
+          <div className="container mx-auto px-4">
+            <div className="mt-6">
+              <PaginatedEpisodeList episodes={episodes} animeId={animeInfo!.id.toString()} />
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   )
 }
