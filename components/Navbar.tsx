@@ -65,6 +65,26 @@ const Navbar = () => {
           <div className="h-16" />
         </div>
 
+        {/* Mobile header: show logo + hamburger on small screens */}
+        <div className="flex md:hidden items-center justify-between absolute left-4 right-4 top-0 h-16">
+          <Link href="/" className="flex items-center group">
+            <Image
+              src="/animeplus-logo.png"
+              alt="AnimePlus"
+              width={100}
+              height={26}
+              priority
+              className="transition-opacity duration-200 group-hover:opacity-70"
+            />
+          </Link>
+
+          <div className="flex items-center space-x-2">
+            <button className="text-white" onClick={toggleMenu} aria-label="Toggle menu">
+              {isMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
+        </div>
+
         {/* Left: logo + genre + search (anchored left on md+) */}
         <div className="hidden md:flex items-center space-x-4 absolute left-4 top-0 bottom-0">
           <Link href="/" className="flex items-center group">

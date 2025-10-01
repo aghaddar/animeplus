@@ -115,24 +115,43 @@ export default function PaginatedEpisodeList({
         </div>
       </div>
 
-      <div ref={containerRef} className="grid grid-cols-5 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2">
-        {currentEpisodes.map((episode) => (
-          <Link
-            key={episode.id}
-            href={getEpisodeUrl(episode)}
-            className={cn(
-              // Let the grid define horizontal space (so 10 columns at lg still fits),
-              // increase vertical size so buttons appear larger while filling their cell.
-              "flex items-center justify-center w-full h-8 sm:h-9 md:h-10 lg:h-12 rounded-full text-xs sm:text-sm font-medium transition-colors",
-              currentEpisodeId === episode.id.toString()
-                ? "bg-purple-600 text-white"
-                : "bg-gray-800 hover:bg-gray-700 text-gray-200",
-            )}
-          >
-            {episode.number}
-          </Link>
-        ))}
-      </div>
+          {/* Mobile: show 2 rows x 5 columns (10 visible) and enable vertical scrolling inside the section */}
+          <div ref={containerRef} className="md:hidden grid grid-cols-5 gap-2 auto-rows-[48px] max-h-[110px] overflow-y-auto pb-2">
+            {currentEpisodes.map((episode) => (
+              <Link
+                key={episode.id}
+                href={getEpisodeUrl(episode)}
+                className={cn(
+                  "flex items-center justify-center w-full h-full rounded-full text-sm font-medium transition-colors",
+                  currentEpisodeId === episode.id.toString()
+                    ? "bg-purple-600 text-white"
+                    : "bg-gray-800 hover:bg-gray-700 text-gray-200",
+                )}
+              >
+                {episode.number}
+              </Link>
+            ))}
+          </div>
+
+          {/* Desktop / Tablet grid (unchanged) */}
+          <div className="hidden md:grid grid-cols-5 sm:grid-cols-6 md:grid-cols-8 lg:grid-cols-10 gap-2">
+            {currentEpisodes.map((episode) => (
+              <Link
+                key={episode.id}
+                href={getEpisodeUrl(episode)}
+                className={cn(
+                  // Let the grid define horizontal space (so 10 columns at lg still fits),
+                  // increase vertical size so buttons appear larger while filling their cell.
+                  "flex items-center justify-center w-full h-8 sm:h-9 md:h-10 lg:h-12 rounded-full text-xs sm:text-sm font-medium transition-colors",
+                  currentEpisodeId === episode.id.toString()
+                    ? "bg-purple-600 text-white"
+                    : "bg-gray-800 hover:bg-gray-700 text-gray-200",
+                )}
+              >
+                {episode.number}
+              </Link>
+            ))}
+          </div>
     </div>
   )
 }
