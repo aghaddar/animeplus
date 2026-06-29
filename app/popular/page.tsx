@@ -1,18 +1,24 @@
+import Link from "next/link"
 import { Suspense } from "react"
 import { ArrowLeft } from "lucide-react"
-import { getPopularAnime } from "@/lib/api"
+import { getPopularAnime } from "@/lib/anilist"
 import AnimeCard from "@/components/AnimeCard"
 
+export const revalidate = 600
+
 export default async function PopularPage() {
-  // Fetch popular anime
-  const popularAnime = await getPopularAnime()
+  // Destructure media from the paginated result
+  const { media: popularAnime } = await getPopularAnime()
 
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="container mx-auto px-4 py-8">
         <div className="flex items-center mb-8">
-          
-          <h1 className="text-3xl font-bold text-left text-white">Most Popular Anime</h1>
+          <Link href="/" className="flex items-center text-gray-400 hover:text-white mr-4">
+            <ArrowLeft size={20} className="mr-2" />
+            Back
+          </Link>
+          <h1 className="text-3xl font-bold text-white">Most Popular Anime</h1>
         </div>
 
         <Suspense fallback={<div className="h-60 flex items-center justify-center">Loading popular anime...</div>}>
@@ -26,6 +32,7 @@ export default async function PopularPage() {
                   image={anime.image}
                   type={anime.type}
                   releaseDate={anime.releaseDate}
+                  rating={anime.rating}
                 />
               ))}
             </div>

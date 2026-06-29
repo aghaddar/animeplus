@@ -1,3 +1,5 @@
+//even when empty it didnt affect the images in the website
+
 import { type NextRequest, NextResponse } from "next/server"
 
 export async function GET(request: NextRequest) {

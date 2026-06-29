@@ -7,7 +7,7 @@ import { Search, Menu, X, Bell, User, ChevronDown } from "lucide-react"
 import { usePathname, useRouter } from "next/navigation"
 import UserProfileDropdown from "./UserProfileDropdown"
 import { useAuth } from "@/lib/auth-context"
-import { getZoroGenreList } from "@/lib/api"
+import { ANILIST_GENRES } from "@/lib/anilist"
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
@@ -18,7 +18,7 @@ const Navbar = () => {
   const pathname = usePathname()
   const router = useRouter()
   const { user, isAuthenticated, isLoading, refreshUserData } = useAuth()
-  const [genres, setGenres] = useState<string[]>([])
+  const [genres] = useState<string[]>(ANILIST_GENRES)
   const [isGenreOpen, setIsGenreOpen] = useState(false)
   const genreCloseTimeout = React.useRef<NodeJS.Timeout | null>(null)
 
@@ -36,10 +36,6 @@ const Navbar = () => {
   useEffect(() => {
     if (isAuthenticated) refreshUserData().catch((err) => console.error("Failed to refresh user data:", err))
   }, [isAuthenticated, refreshUserData])
-
-  useEffect(() => {
-    getZoroGenreList().then(setGenres)
-  }, [])
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault()
@@ -273,4 +269,3 @@ const Navbar = () => {
 }
 
 export default Navbar
-

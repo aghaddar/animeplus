@@ -1,162 +1,60 @@
+// app/page.tsx
 import { Suspense } from "react"
 import HeroSlider from "@/components/HeroSlider"
 import HeroSliderSkeleton from "@/components/HeroSliderSkeleton"
 import AnimeList from "@/components/AnimeList"
 import AnimeListSkeleton from "@/components/AnimeListSkeleton"
-import { getPopularAnime, getRecentEpisodes, getFeaturedAnime, getTopAiringAnime, getMostFavoriteAnime, getLatestCompletedAnime, getRecentAddedAnime } from "@/lib/api"
+import { getHomePageData } from "@/lib/anilist"
 
-async function getAnimeData() {
-  try {
-    console.log("Fetching anime data for home page from Consumet API...")
-
-    // Get popular anime from Consumet API
-    const popularAnime = await getPopularAnime()
-    console.log(`Retrieved ${popularAnime.length} popular anime titles from Consumet API`)
-
-    // Get recent episodes from Consumet API
-    const recentEpisodes = await getRecentEpisodes()
-    console.log(`Retrieved ${recentEpisodes.length} recent episodes from Consumet API`)
-
-    // Get top airing anime from Consumet API
-    const topAiringAnime = await getTopAiringAnime()
-    console.log(`Retrieved ${topAiringAnime.length} top airing anime from Consumet API`)
-
-  // Get most favorite anime from Consumet API
-  const mostFavoriteAnime = await getMostFavoriteAnime()
-  console.log(`Retrieved ${mostFavoriteAnime.length} top favorite anime from Consumet API`)
-
-    // Get latest completed anime from Consumet API
-    const latestCompletedAnime = await getLatestCompletedAnime()
-    console.log(`Retrieved ${latestCompletedAnime.length} latest completed anime from Consumet API`)
-
-    // Get recent added anime from Consumet API
-    const recentAddedAnime = await getRecentAddedAnime()
-    console.log(`Retrieved ${recentAddedAnime.length} recent added anime from Consumet API`)
-
-    // Get featured anime from Consumet API
-    const featuredAnime = await getFeaturedAnime()
-    console.log(`Retrieved ${featuredAnime.length} featured anime for slider from Consumet API`)
-
-    // For recommended, we'll just use the popular anime for demo purposes
-    const recommendedAnime = [...popularAnime].sort(() => Math.random() - 0.5)
-
-    return {
-      popularAnime,
-      recentEpisodes,
-      topAiringAnime,
-      mostFavoriteAnime,
-      latestCompletedAnime,
-      recentAddedAnime,
-      recommendedAnime,
-      featuredAnime,
-    }
-  } catch (error) {
-    console.error("Error in getAnimeData from Consumet API:", error)
-    // Return empty arrays as fallback
-    return {
-      popularAnime: [],
-      recentEpisodes: [],
-      topAiringAnime: [],
-      mostFavoriteAnime: [],
-      latestCompletedAnime: [],
-      recentAddedAnime: [],
-      recommendedAnime: [],
-      featuredAnime: [],
-    }
-  }
-}
+export const revalidate = 600 // revalidate every 10 minutes at the page level
 
 export default async function Home() {
-  const { popularAnime, recentEpisodes, topAiringAnime, mostFavoriteAnime, latestCompletedAnime, recentAddedAnime, recommendedAnime, featuredAnime } = await getAnimeData()
+  const { trending, popular, topRated, seasonal, featured } = await getHomePageData()
 
   return (
-    <div className="min-h-screen bg-black text-white">
+    <div className="min-h-screen bg-[#0a0a0f] text-white">
+
+      {/* Hero Slider */}
       <Suspense fallback={<HeroSliderSkeleton />}>
-        <HeroSlider
-          featuredAnime={featuredAnime.map((anime: any) => ({
-            ...anime,
-            releaseDate: anime.releaseDate?.toString(),
-            description: anime.description || "No description available.", // Ensure description is always defined
-          }))}
-        />
+        <HeroSlider featuredAnime={featured} />
       </Suspense>
 
-      <Suspense fallback={<AnimeListSkeleton title="Recent Episodes" />}>
+      {/* Trending Now */}
+      <Suspense fallback={<AnimeListSkeleton title="Trending Now" />}>
         <AnimeList
-          title="Recent Episodes"
-          animeList={recentEpisodes.map((anime: any) => ({
-            ...anime,
-            releaseDate: anime.releaseDate?.toString(),
-          }))}
-          viewAllLink="/recent-episodes"
+          title="Trending Now"
+          animeList={trending}
+          viewAllLink="/browse/trending"
         />
       </Suspense>
 
-      <Suspense fallback={<AnimeListSkeleton title="Top Airing Anime" />}>
+      {/* This Season */}
+      <Suspense fallback={<AnimeListSkeleton title="This Season" />}>
         <AnimeList
-          title="Top Airing Anime"
-          animeList={topAiringAnime.map((anime: any) => ({
-            ...anime,
-            releaseDate: anime.releaseDate?.toString(),
-          }))}
-          viewAllLink="/top-airing"
+          title="This Season"
+          animeList={seasonal}
+          viewAllLink="/browse/seasonal"
         />
       </Suspense>
 
-      <Suspense fallback={<AnimeListSkeleton title="Most Favorite Anime" />}>
-          <AnimeList
-          title="Top Favorite Anime"
-          animeList={mostFavoriteAnime.map((anime: any) => ({
-            ...anime,
-            releaseDate: anime.releaseDate?.toString(),
-          }))}
-          viewAllLink="/most-favorite"
-        />
-      </Suspense>
-
-      <Suspense fallback={<AnimeListSkeleton title="Latest Completed Anime" />}>
-        <AnimeList
-          title="Latest Completed Anime"
-          animeList={latestCompletedAnime.map((anime: any) => ({
-            ...anime,
-            releaseDate: anime.releaseDate?.toString(),
-          }))}
-          viewAllLink="/latest-completed"
-        />
-      </Suspense>
-
-      <Suspense fallback={<AnimeListSkeleton title="Recently Added Anime" />}>
-        <AnimeList
-          title="Recently Added Anime"
-          animeList={recentAddedAnime.map((anime: any) => ({
-            ...anime,
-            releaseDate: anime.releaseDate?.toString(),
-          }))}
-          viewAllLink="/recent-added"
-        />
-      </Suspense>
-
+      {/* Most Popular */}
       <Suspense fallback={<AnimeListSkeleton title="Most Popular" />}>
         <AnimeList
           title="Most Popular"
-          animeList={popularAnime.map((anime: any) => ({
-            ...anime,
-            releaseDate: anime.releaseDate?.toString(),
-          }))}
-          viewAllLink="/popular"
+          animeList={popular}
+          viewAllLink="/browse/popular"
         />
       </Suspense>
 
-      <Suspense fallback={<AnimeListSkeleton title="Trending Anime" />}>
+      {/* Top Rated */}
+      <Suspense fallback={<AnimeListSkeleton title="Top Rated" />}>
         <AnimeList
-          title="Trending Anime"
-          animeList={recommendedAnime.map((anime: any) => ({
-            ...anime,
-            releaseDate: typeof anime.releaseDate === "number" ? anime.releaseDate.toString() : anime.releaseDate,
-          }))}
-          viewAllLink="/trending"
+          title="Top Rated"
+          animeList={topRated}
+          viewAllLink="/browse/top-rated"
         />
       </Suspense>
+
     </div>
   )
 }

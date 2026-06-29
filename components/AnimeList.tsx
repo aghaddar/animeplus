@@ -11,6 +11,7 @@ interface Anime {
   image: string
   type?: string
   releaseDate?: string
+  rating?: number | null
 }
 
 interface AnimeListProps {
@@ -89,12 +90,13 @@ const AnimeList = ({ title, animeList, viewAllLink }: AnimeListProps) => {
         {animeList.map((anime) => (
           <div key={anime.id} className="flex-shrink-0 w-[120px] sm:w-[140px] md:w-[160px]">
             <AnimeCard
-              id={anime.id}
-              title={anime.title}
-              image={anime.image}
-              type={anime.type}
-              releaseDate={anime.releaseDate}
-            />
+            id={anime.id}
+            title={anime.title}
+            image={anime.image}
+            type={anime.type}
+            releaseDate={anime.releaseDate}
+            rating={anime.rating ?? undefined}
+          />
           </div>
         ))}
       </div>
