@@ -1,6 +1,8 @@
 import type React from "react"
 import type { Metadata } from "next"
 import { Inter } from "next/font/google"
+// @ts-ignore: allow global CSS import without module declarations
+import "./globals.css"
 import Navbar from "@/components/Navbar"
 import Footer from "@/components/Footer"
 import { AuthProvider } from "@/lib/auth-context"

@@ -35,21 +35,21 @@ export interface Episode {
 
 // Helper function to safely get episode count
 export function getEpisodeCount(anime: AnimeResult): number | undefined {
-  if (typeof anime.episodes === "number") {
-    return anime.episodes
-  } else if (Array.isArray(anime.episodes)) {
-    return anime.episodes.length
-  } else if (anime.totalEpisodes) {
-    return anime.totalEpisodes
-  }
-  return undefined
+  return anime.totalEpisodes ?? undefined
 }
 
 // Update WatchlistAnimeResult to include all needed properties
-export interface WatchlistAnimeResult extends AnimeResult {
+// lib/types.ts
+export interface WatchlistAnimeResult {
+  id: string
   watchlistId?: number
-  status?: string
-  priority?: string
+  title: string
+  image?: string
+  type?: string
+  releaseDate?: string
+  description?: string
+  watchStatus?: "Watching" | "Completed" | "On Hold" | "Dropped"
+  priority?: "High" | "Medium" | "Low"
   lastWatchedEpisode?: string
   progressPercentage?: number
 }

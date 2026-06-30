@@ -1,4 +1,5 @@
 import type { AnimeResult } from "./api"
+import type { WatchlistAnimeResult } from "./types"
 
 // Define the backend URL
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://0.0.0.0:3001"
@@ -12,13 +13,14 @@ export interface WatchlistItem {
   anime_type: string
 }
 
+/*
 export interface WatchlistAnimeResult extends AnimeResult {
-  watchlistId: number
-  status?: string
-  priority?: string
+  watchlistId?: number
+  watchStatus?: "Watching" | "Completed" | "On Hold" | "Dropped"
+  priority?: "High" | "Medium" | "Low"
   lastWatchedEpisode?: string
   progressPercentage?: number
-}
+}*/
 
 // Flag to track if we're using local storage fallback
 let usingLocalStorageFallback = false
@@ -342,15 +344,15 @@ export const checkAnimeInWatchlist = async (animeId: string): Promise<boolean> =
 // Helper function to convert watchlist items to AnimeResult objects
 export const convertWatchlistItemsToAnimeResults = (items: WatchlistItem[]): WatchlistAnimeResult[] => {
   return items.map((item) => ({
-    id: item.anime_title, // Using anime_title as ID since that's what your backend uses
+    id: item.anime_title,
     watchlistId: item.id,
-    status: "Watching", // Default status
-    priority: "Medium", // Default priority
-    progressPercentage: 0, // Default progress
+    watchStatus: "Watching" as const,
+    priority: "Medium" as const,
+    progressPercentage: 0,
     title: item.anime_title,
     image: item.img_url,
-    releaseDate: "",
+    releaseDate: undefined,
     type: item.anime_type || "TV",
-    description: "",
+    description: undefined,
   }))
 }
