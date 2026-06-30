@@ -615,3 +615,40 @@ export const ANILIST_GENRES = [
   "Supernatural",
   "Thriller",
 ]
+
+const TOP_AIRING_QUERY = `
+  query ($page: Int, $perPage: Int) {
+    Page(page: $page, perPage: $perPage) {
+      pageInfo {
+        total
+        currentPage
+        lastPage
+        hasNextPage
+      }
+      media(
+        type: ANIME
+        status: RELEASING
+        sort: POPULARITY_DESC
+        isAdult: false
+      ) {
+        ${MEDIA_FIELDS}
+      }
+    }
+  }
+`
+
+export async function getTopAiringAnime(
+  page = 1,
+  perPage = 30
+): Promise<PaginatedResult> {
+  return withCache(`top-airing:${page}`, async () => {
+    const data = await anilistQuery<{
+      Page: { media: AniListAnime[]; pageInfo: PageInfo }
+    }>(TOP_AIRING_QUERY, { page, perPage })
+
+    return {
+      media: data.Page.media.map(normalizeAniListAnime),
+      pageInfo: data.Page.pageInfo,
+    }
+  }, 10 * 60 * 1000)
+}

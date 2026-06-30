@@ -1,5 +1,6 @@
 import type { AnimeResult } from "./api"
 import type { WatchlistAnimeResult } from "./types"
+export type { WatchlistAnimeResult }
 
 // Define the backend URL
 const BACKEND_URL = process.env.NEXT_PUBLIC_BACKEND_URL || "http://0.0.0.0:3001"

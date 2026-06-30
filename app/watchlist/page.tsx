@@ -16,7 +16,6 @@ import {
 import { useAuth } from "@/lib/auth-context"
 import { X, AlertCircle, CheckCircle2, Filter, SortAsc } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
-import { getEpisodeCount } from "@/lib/types"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -84,7 +83,7 @@ export default function WatchlistPage() {
 
     // Apply status filter
     if (statusFilter) {
-      result = result.filter((anime) => anime.status === statusFilter)
+      result = result.filter((anime) => anime.watchStatus === statusFilter)
     }
 
     // Apply sorting
@@ -98,8 +97,8 @@ export default function WatchlistPage() {
       case "status":
         result.sort((a, b) => {
           const statusOrder = { Watching: 1, "On Hold": 2, Completed: 3, Dropped: 4 }
-          const statusA = (a.status as keyof typeof statusOrder) || "Watching"
-          const statusB = (b.status as keyof typeof statusOrder) || "Watching"
+          const statusA = (a.watchStatus as keyof typeof statusOrder) || "Watching"
+          const statusB = (b.watchStatus as keyof typeof statusOrder) || "Watching"
           return statusOrder[statusA] - statusOrder[statusB]
         })
         break
@@ -271,13 +270,13 @@ export default function WatchlistPage() {
                   <div className="absolute top-2 left-2">
                     <Badge
                       className={`
-                        ${anime.status === "Watching" ? "bg-blue-500" : ""}
-                        ${anime.status === "Completed" ? "bg-green-500" : ""}
-                        ${anime.status === "On Hold" ? "bg-yellow-500" : ""}
-                        ${anime.status === "Dropped" ? "bg-red-500" : ""}
+                        ${anime.watchStatus === "Watching" ? "bg-blue-500" : ""}
+                        ${anime.watchStatus === "Completed" ? "bg-green-500" : ""}
+                        ${anime.watchStatus === "On Hold" ? "bg-yellow-500" : ""}
+                        ${anime.watchStatus === "Dropped" ? "bg-red-500" : ""}
                       `}
                     >
-                      {anime.status || "Watching"}
+                      {anime.watchStatus || "Watching"}
                     </Badge>
                   </div>
 
@@ -298,13 +297,6 @@ export default function WatchlistPage() {
                   {anime.progressPercentage !== undefined && anime.progressPercentage > 0 && (
                     <div className="absolute bottom-0 left-0 right-0 h-1 bg-gray-700">
                       <div className="h-full bg-green-500" style={{ width: `${anime.progressPercentage}%` }} />
-                    </div>
-                  )}
-
-                  {/* Episode count */}
-                  {getEpisodeCount(anime) && (
-                    <div className="absolute bottom-2 left-2 bg-black/70 text-xs px-2 py-1 rounded">
-                      {getEpisodeCount(anime)} episodes
                     </div>
                   )}
                 </div>
