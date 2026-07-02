@@ -43,7 +43,7 @@ export default async function Home() {
           title="Most Popular"
           animeList={popular}
           viewAllLink="/popular"
-        />``
+        />
       </Suspense>
 
       {/* Top Rated */}
