@@ -652,3 +652,89 @@ export async function getTopAiringAnime(
     }
   }, 10 * 60 * 1000)
 }
+
+const LATEST_COMPLETED_QUERY = `
+query ($page: Int, $perPage: Int) {
+  Page(page: $page, perPage: $perPage) {
+    pageInfo {
+      total
+      currentPage
+      lastPage
+      hasNextPage
+    }
+
+    media(
+      type: ANIME
+      status: FINISHED
+      sort: END_DATE_DESC
+      isAdult: false
+    ) {
+      ${MEDIA_FIELDS}
+    }
+  }
+}
+`
+
+export async function getLatestCompletedAnime(
+  page = 1,
+  perPage = 30
+): Promise<PaginatedResult> {
+  return withCache(`latest-completed:${page}:${perPage}`, async () => {
+    const data = await anilistQuery<{
+      Page: {
+        media: AniListAnime[]
+        pageInfo: PageInfo
+      }
+    }>(LATEST_COMPLETED_QUERY, {
+      page,
+      perPage,
+    })
+
+    return {
+      media: data.Page.media.map(normalizeAniListAnime),
+      pageInfo: data.Page.pageInfo,
+    }
+  }, 10 * 60 * 1000)
+}
+
+const MOST_FAVORITED_QUERY = `
+query ($page: Int, $perPage: Int) {
+  Page(page: $page, perPage: $perPage) {
+    pageInfo {
+      total
+      currentPage
+      lastPage
+      hasNextPage
+    }
+
+    media(
+      type: ANIME
+      sort: FAVOURITES_DESC
+      isAdult: false
+    ) {
+      ${MEDIA_FIELDS}
+    }
+  }
+}
+`
+export async function getMostFavoritedAnime(
+  page = 1,
+  perPage = 30
+): Promise<PaginatedResult> {
+  return withCache(`favorites:${page}:${perPage}`, async () => {
+    const data = await anilistQuery<{
+      Page: {
+        media: AniListAnime[]
+        pageInfo: PageInfo
+      }
+    }>(MOST_FAVORITED_QUERY, {
+      page,
+      perPage,
+    })
+
+    return {
+      media: data.Page.media.map(normalizeAniListAnime),
+      pageInfo: data.Page.pageInfo,
+    }
+  }, 10 * 60 * 1000)
+}

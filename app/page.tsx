@@ -24,7 +24,7 @@ export default async function Home() {
         <AnimeList
           title="Trending Now"
           animeList={trending}
-          viewAllLink="/browse/trending"
+          viewAllLink="/trending"
         />
       </Suspense>
 
@@ -33,7 +33,7 @@ export default async function Home() {
         <AnimeList
           title="This Season"
           animeList={seasonal}
-          viewAllLink="/browse/seasonal"
+          viewAllLink="/seasonal"
         />
       </Suspense>
 
@@ -42,8 +42,8 @@ export default async function Home() {
         <AnimeList
           title="Most Popular"
           animeList={popular}
-          viewAllLink="/browse/popular"
-        />
+          viewAllLink="/popular"
+        />``
       </Suspense>
 
       {/* Top Rated */}
@@ -51,7 +51,7 @@ export default async function Home() {
         <AnimeList
           title="Top Rated"
           animeList={topRated}
-          viewAllLink="/browse/top-rated"
+          viewAllLink="/top-rated"
         />
       </Suspense>
 

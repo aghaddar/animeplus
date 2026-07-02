@@ -1,22 +1,22 @@
 import React from "react";
 import AnimeCard from "@/components/AnimeCard";
-import { getRecentlyAddedAnime } from "@/lib/anilist";
+import { getSeasonalAnime } from "@/lib/anilist";
 
 export const revalidate = 600;
 
-export default async function RecentAddedPage() {
-  const { media: animeList } = await getRecentlyAddedAnime(1, 30);
+export default async function SeasonalPage() {
+  const { media: animeList } = await getSeasonalAnime(1, 30);
 
   return (
     <div className="min-h-screen bg-black text-white">
       <div className="container mx-auto px-4 py-8">
         <h1 className="text-3xl font-bold mb-8">
-          Recently Added Anime
+          This Season's Anime
         </h1>
 
         {animeList.length === 0 ? (
           <div className="text-gray-400">
-            No recently added anime found.
+            No seasonal anime found.
           </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-4 sm:gap-6">
